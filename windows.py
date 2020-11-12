@@ -8,6 +8,8 @@ from monitors import monitor_of_point, monitors
 hwnd_info = {}
 windows = [[] for monitor in monitors]
 
+blacklist = set(['Program Manager'])
+
 # Windows-related constants
 user32 = ctypes.windll.user32
 ole32 = ctypes.windll.ole32
@@ -112,6 +114,9 @@ def callback(hWinEventHook, event, hwnd, idObject, idChild, dwEventThread, dwmsE
     user32.GetWindowTextW(hwnd, title, length + 1)
 
     title = title.value
+    if title in blacklist:
+        return
+
     if event == EVENT_SYSTEM_MOVESIZEEND:
         set_monitor(hwnd)
     else:
